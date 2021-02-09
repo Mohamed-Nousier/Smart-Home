@@ -1,41 +1,45 @@
 /*
- * Master_Final.c
+ * Slave_Final.c
  *
- * Created: 2/9/2021 5:17:15 PM
+ * Created: 2/9/2021 5:17:49 PM
  *  Author: 20115
  */ 
 
-#include "UART.h"
-#include "SPI.h"
 #include <avr/io.h>
-#include <avr/interrupt.h>
+#include "SPI.h"
 
 
-volatile unsigned char  DataReceived = 0;
-volatile unsigned char RxData = 0;
-
+volatile unsigned char Data;
 
 int main(void)
 {
-	sei(); // global interrupt enable
-	Uart_Init();
-	SPI_Init(Master);
-	Slave_EN();
-	HC05_vInit();  //bluetooth 
+	DDRD |=((1<<0)|(1<<1)|(1<<2));
+	SPI_Init(Slave);
 	
-    while(1) 
+	
+    while(1)
     {
-                   
-		if (DataReceived == 1 ) /* when the UART finishin its job the flag will be set and the SPI will start*/
+		Data = SPI_TxRx();
+		switch (Data)
 		{
-   			DataReceived = 0 ;
-			SPI_TxRx(RxData);
-		}			  			  
-    } 
-} 
-
-ISR(USART_RXC_vect)
-{
-	DataReceived = 1 ;
-	RxData = UDR; 
+			case '0' :
+			// Toggle ROOM1: LED0
+			PORTD ^= (1<<0);
+			break;
+			case '1' :
+			// Toggle ROOM2: LED1
+			PORTD ^= (1<<1);
+			break;
+			case '2' :
+			// Toggle ROOM3: LED2
+			PORTD ^= (1<<2);
+			break;
+			default:
+			// Wrong Entry
+			break;
+		}
+		
+		
+		
+	}	
 }

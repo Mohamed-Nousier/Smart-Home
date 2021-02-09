@@ -14,11 +14,7 @@ void SPI_Init(SPI_StatusTypes status)
 		case Master:
 		DDRB |= ((1<<SCK)|(1<<MOSI)|(1<<SS));
 		DDRB &=~ (1<<MISO);
-		Slave_DS();  // ss = 1 then ~ = 0 : slave not working  (PORTB |=(1<<SS))
 		SPCR |= ((1<<SPE)|(1<<MSTR));
-		//SPI ->SPI_SPCR = ((1<<SPE)|(1<<MSTR));
-		//SPI->SPI_SPCR.SMSTR = 1;
-		//SPI->SPI_SPCR.SSPE = 1;
 		break;
 		case Slave:
 		DDRB |= (1<<MISO);
@@ -29,9 +25,9 @@ void SPI_Init(SPI_StatusTypes status)
 }
 
 
- void SPI_TxRx(unsigned char data)
+unsigned char SPI_TxRx(void)
 {
-	SPDR = data;
+	//SPDR = data;
 	while(!((SPSR>>SPIF)&1)); // check if the transmitting is complete
-	//return SPDR;
+	return SPDR;
 }

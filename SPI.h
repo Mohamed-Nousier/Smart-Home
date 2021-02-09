@@ -19,21 +19,14 @@
 #define MISO 6 // master in slave out
 #define SCK 7  // clock
 
-
-/*SS bit controlling */
-#define Slave_EN() (PORTB &=~(1<<SS))
-#define Slave_DS() (PORTB |=(1<<SS))
-
-
 /*function prototyping*/
 typedef enum
 {
 	Master = 0, 
 	Slave
-}SPI_StatusTypes;
-	
-	
+	}SPI_StatusTypes;
+
 void SPI_Init(SPI_StatusTypes status);
-void SPI_TxRx(unsigned char data);  // it will be one function since it is based on circular shift
+unsigned char SPI_TxRx(void);  // it will be one function since it is based on circular shift
 
 #endif /* SPI_H_ */
